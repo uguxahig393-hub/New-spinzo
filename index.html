@@ -2,40 +2,71 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin & Earn</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#4b0082;
+  background: radial-gradient(circle,#6a11cb,#2d014d);
   color:white;
   text-align:center;
 }
 
-/* TOP */
+/* TOP BUTTONS */
 .topBtns{
   display:flex;
   justify-content:space-around;
-  margin:10px;
+  margin-top:15px;
 }
-.icon{width:40px;}
+.topItem{text-align:center;}
+.icon{width:50px;}
 .topBtn{
-  padding:6px 12px;
+  padding:8px 15px;
   border-radius:20px;
-  background:linear-gradient(purple,pink);
+  background:linear-gradient(45deg,#a100ff,#ff00cc);
+  font-weight:bold;
 }
 .cash{
-  background:gold;
+  background:linear-gradient(45deg,#FFD700,#FFA500);
   color:black;
 }
 
 /* BALANCE */
-.balance{font-size:28px;}
+.balance{
+  font-size:30px;
+  margin-top:10px;
+}
+
+/* PROGRESS */
+.progressBox{
+  width:85%;
+  margin:auto;
+  background:#aaa;
+  border-radius:20px;
+}
+.progress{
+  height:10px;
+  width:0%;
+  background:linear-gradient(orange,yellow);
+  border-radius:20px;
+}
+
+/* POINTER */
+.pointer{
+  width:0;
+  height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-bottom:25px solid gold;
+  margin:auto;
+  margin-top:10px;
+}
 
 /* WHEEL */
 .wheelBox{
-  width:280px;
-  height:280px;
+  width:300px;
+  height:300px;
   margin:20px auto;
   position:relative;
 }
@@ -49,87 +80,132 @@ body{
 }
 
 /* CENTER */
-.center{
+.centerCircle{
   position:absolute;
-  top:50%; left:50%;
+  top:50%;
+  left:50%;
   transform:translate(-50%,-50%);
-  width:80px; height:80px;
+  width:90px;
+  height:90px;
   border-radius:50%;
   background:black;
   display:flex;
-  flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  box-shadow:0 0 20px gold;
   cursor:pointer;
 }
 
-/* BUTTON */
-.btn{
-  padding:8px 12px;
-  border-radius:20px;
-  background:orange;
+.centerCircle span{
+  font-size:22px;
+}
+
+/* SIDE BUTTONS */
+.sideBtn{
   margin:5px;
+}
+
+/* INVITE */
+.invite{
+  margin-top:20px;
+  padding:15px;
+  background:linear-gradient(45deg,purple,pink);
+  border-radius:20px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- TOP -->
 <div class="topBtns">
-  <div>
-    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="icon"><br>
+  <div class="topItem">
+    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="icon">
     <div class="topBtn">Rank</div>
   </div>
 
-  <div>
-    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" class="icon"><br>
+  <div class="topItem">
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" class="icon">
     <div class="topBtn">Invitation</div>
   </div>
 
-  <div>
-    <img src="https://cdn-icons-png.flaticon.com/512/2331/2331943.png" class="icon"><br>
+  <div class="topItem">
+    <img src="https://cdn-icons-png.flaticon.com/512/2331/2331943.png" class="icon">
     <div class="topBtn cash">Cash Out</div>
   </div>
 </div>
 
+<!-- BALANCE -->
 <div class="balance">₹<span id="bal">0</span></div>
 
+<!-- PROGRESS -->
+<div class="progressBox">
+  <div class="progress" id="progress"></div>
+</div>
+<p id="leftText"></p>
+
+<div class="pointer"></div>
+
+<!-- WHEEL -->
 <div class="wheelBox">
 
-  <!-- ✅ WORKING WHEEL IMAGE -->
+  <!-- ✅ FIXED IMAGE -->
   <img id="wheel" class="wheel"
-  src="https://i.imgur.com/6o5VQwB.png">
+  src="https://res.cloudinary.com/dtz0urit6/image/upload/uqph2c4zajuzbgwookv3.png">
 
-  <div class="center" onclick="spin()">
+  <div class="centerCircle" onclick="spin()">
     <span id="spins">3</span>
     <small>Spins</small>
   </div>
 
 </div>
 
-<button class="btn" onclick="join()">+1 Spin</button>
-<button class="btn" onclick="more()">More</button>
+<!-- BUTTONS -->
+<button class="topBtn sideBtn" onclick="join()">+1 Spin</button>
+<button class="topBtn sideBtn" onclick="more()">More</button>
+
+<!-- INVITE -->
+<div class="invite">
+  Invite for Spins!<br><br>
+  <button class="topBtn" onclick="copyLink()">Copy Link</button>
+</div>
 
 <script>
-let balance=0, spins=3, spinCount=0, rotate=0;
+let balance=0;
+let spins=3;
+let spinCount=0;
+let rotate=0;
 
+// UPDATE UI
 function update(){
   document.getElementById("bal").innerText=balance;
   document.getElementById("spins").innerText=spins;
+
+  let percent=(balance/250)*100;
+  if(percent>100) percent=100;
+
+  document.getElementById("progress").style.width=percent+"%";
+
+  let left=250-balance;
+  if(left<0) left=0;
+
+  document.getElementById("leftText").innerText=
+  "Only ₹"+left+" to cash out ₹250!";
 }
 
+// SPIN
 function spin(){
   if(spins<=0){
-    alert("No spins");
+    alert("No spins left!");
     return;
   }
 
   spins--;
   spinCount++;
 
-  let win;
+  let win=0;
 
-  // ✅ FIXED RANDOM
   if(spinCount==1){
     win=Math.floor(Math.random()*31)+150; // 150-180
   }else if(spinCount==2){
@@ -143,30 +219,39 @@ function spin(){
   rotate += 1440 + Math.floor(Math.random()*360);
 
   document.getElementById("wheel").style.transform =
-    "rotate("+rotate+"deg)";
+  "rotate("+rotate+"deg)";
 
   setTimeout(()=>{
-    alert("Won ₹"+win);
+    alert("You won ₹"+win);
     update();
   },4000);
 }
 
-// ✅ FIXED JOIN (no block)
+// JOIN CHANNEL
 function join(){
-  if(localStorage.getItem("join")){
-    alert("Already claimed");
+  if(localStorage.getItem("joined")){
+    alert("Already claimed!");
     return;
   }
 
+  localStorage.setItem("joined","yes");
+
+  // redirect (no block)
   location.href="https://t.me/+fo5RTULOJ3c5N2Q9";
 
   spins++;
-  localStorage.setItem("join","yes");
+  update();
 }
 
 // MORE
 function more(){
   alert("Coming soon...");
+}
+
+// COPY
+function copyLink(){
+  navigator.clipboard.writeText(location.href);
+  alert("Link Copied!");
 }
 
 update();
