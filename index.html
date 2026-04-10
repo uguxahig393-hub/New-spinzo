@@ -28,11 +28,12 @@ body{
   padding:8px 14px;
   border-radius:20px;
   color:white;
+  margin:5px;
 }
 
 /* BALANCE */
 .balance{
-  font-size:30px;
+  font-size:28px;
   margin-top:10px;
 }
 
@@ -50,28 +51,32 @@ body{
   border-radius:20px;
 }
 
-/* WHEEL */
-.wheelBox{
-  position:relative;
-  margin-top:20px;
-}
-
-.wheel{
-  width:280px;
-  height:280px;
-  border-radius:50%;
-  margin:auto;
-  transition:transform 4s ease-out;
-}
-
 /* POINTER */
 .pointer{
   width:0;
   height:0;
-  border-left:15px solid transparent;
-  border-right:15px solid transparent;
-  border-bottom:30px solid gold;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-bottom:25px solid gold;
   margin:auto;
+  margin-top:10px;
+}
+
+/* WHEEL */
+.wheelBox{
+  width:90vw;
+  max-width:320px;
+  aspect-ratio:1/1;
+  margin:20px auto;
+  position:relative;
+}
+
+.wheel{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
 }
 
 /* CENTER */
@@ -80,14 +85,15 @@ body{
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  background:black;
-  border-radius:50%;
   width:80px;
   height:80px;
+  border-radius:50%;
+  background: radial-gradient(#333,#000);
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 0 15px gold;
+  box-shadow:0 0 20px gold;
+  font-size:18px;
 }
 
 /* SIDE BUTTONS */
@@ -97,8 +103,8 @@ body{
   transform:translateY(-50%);
 }
 
-.leftBtn{ left:5px; }
-.rightBtn{ right:5px; }
+.leftBtn{ left:-10px; }
+.rightBtn{ right:-10px; }
 
 /* INVITE */
 .invite{
@@ -127,7 +133,6 @@ body{
   padding:20px;
   border-radius:20px;
 }
-
 </style>
 </head>
 
@@ -150,15 +155,13 @@ body{
 <div class="progressBox">
   <div class="progress" id="progress"></div>
 </div>
-<p id="left"></p>
+<p id="leftText"></p>
 
 <div class="pointer"></div>
 
 <div class="wheelBox">
-
-  <!-- WHEEL IMAGE -->
   <img id="wheel" class="wheel"
-  src="https://i.imgur.com/6o5VQwB.png">
+  src="https://res.cloudinary.com/dtz0urit6/image/upload/f_png,q_auto/cloudinary-tools-uploads/uqph2c4zajuzbgwookv3.png">
 
   <div class="centerCircle">
     <span id="spins">3</span>
@@ -166,16 +169,13 @@ body{
 
   <button class="btn sideBtn leftBtn" onclick="refer()">+1 Spin</button>
   <button class="btn sideBtn rightBtn">More</button>
-
 </div>
 
-<br>
 <button class="btn" onclick="spin()">SPIN</button>
 
 <div class="invite">
-  Invite for Spins!
-  <br><br>
-  <button class="btn" onclick="copy()">Copy Link</button>
+  Invite for Spins!<br><br>
+  <button class="btn" onclick="copyLink()">Copy Link</button>
 </div>
 
 <!-- POPUP -->
@@ -188,59 +188,74 @@ body{
 </div>
 
 <script>
-let balance=0, spins=3, spinCount=0;
+let balance = 0;
+let spins = 3;
+let spinCount = 0;
 
-function update(){
-  document.getElementById("bal").innerText=balance;
-  document.getElementById("spins").innerText=spins;
+function updateUI(){
+  document.getElementById("bal").innerText = balance;
+  document.getElementById("spins").innerText = spins;
 
-  let p=(balance/250)*100;
-  if(p>100)p=100;
-  document.getElementById("progress").style.width=p+"%";
+  let percent = (balance / 250) * 100;
+  if(percent > 100) percent = 100;
 
-  document.getElementById("left").innerText=
-  "Only ₹"+(250-balance)+" to cash out ₹250!";
+  document.getElementById("progress").style.width = percent + "%";
+
+  let left = 250 - balance;
+  if(left < 0) left = 0;
+
+  document.getElementById("leftText").innerText =
+    "Only ₹" + left + " to cash out ₹250!";
 }
 
 function spin(){
-  if(spins<=0){ alert("No spins"); return; }
+  if(spins <= 0){
+    alert("No spins left!");
+    return;
+  }
 
-  spins--; spinCount++;
+  spins--;
+  spinCount++;
 
-  let win=0;
-  if(spinCount==1) win=160;
-  else if(spinCount==2) win=Math.floor(Math.random()*10)+1;
-  else win=Math.floor(Math.random()*5)+1;
+  let win = 0;
 
-  balance+=win;
+  if(spinCount == 1){
+    win = 160;
+  } else if(spinCount == 2){
+    win = Math.floor(Math.random()*10)+1;
+  } else {
+    win = Math.floor(Math.random()*5)+1;
+  }
 
-  let deg=720+Math.random()*360;
-  document.getElementById("wheel").style.transform=
-  "rotate("+deg+"deg)";
+  balance += win;
+
+  let deg = 1440 + Math.floor(Math.random() * 360);
+  document.getElementById("wheel").style.transform =
+    "rotate(" + deg + "deg)";
 
   setTimeout(()=>{
-    document.getElementById("popup").style.display="flex";
-    document.getElementById("winAmt").innerText=win;
-    update();
-  },4000);
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("winAmt").innerText = win;
+    updateUI();
+  }, 4000);
 }
 
 function closePop(){
-  document.getElementById("popup").style.display="none";
+  document.getElementById("popup").style.display = "none";
 }
 
 function refer(){
   spins++;
-  alert("+1 Spin");
-  update();
+  alert("+1 Spin Added");
+  updateUI();
 }
 
-function copy(){
-  navigator.clipboard.writeText(location.href);
+function copyLink(){
+  navigator.clipboard.writeText(window.location.href);
   alert("Link Copied!");
 }
 
-update();
+updateUI();
 </script>
 
 </body>
