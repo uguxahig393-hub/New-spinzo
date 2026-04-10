@@ -24,30 +24,36 @@ body{
 .topBtns{
   display:flex;
   justify-content:space-around;
-  margin-top:10px;
+  margin-top:15px;
 }
 
 .topItem{
   text-align:center;
 }
 
-.emoji{
-  font-size:22px;
-  display:block;
+.icon{
+  width:50px;
+  height:50px;
+  margin-bottom:5px;
 }
 
-.btn{
-  background: linear-gradient(45deg,#ff9800,#ff5722);
-  border:none;
-  padding:8px 14px;
+/* BUTTON STYLE */
+.topBtn{
+  padding:8px 15px;
   border-radius:20px;
-  color:white;
-  margin-top:5px;
+  background: linear-gradient(45deg,#a100ff,#ff00cc);
+  font-weight:bold;
+}
+
+/* GOLD CASHOUT */
+.cash{
+  background: linear-gradient(45deg,#FFD700,#FFA500);
+  color:black;
 }
 
 /* BALANCE */
 .balance{
-  font-size:28px;
+  font-size:30px;
   margin-top:10px;
 }
 
@@ -90,17 +96,17 @@ body{
   height:100%;
   border-radius:50%;
   object-fit:cover;
-  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  transition: transform 4s cubic-bezier(0.17,0.67,0.12,0.99);
 }
 
-/* CENTER BUTTON (SPIN HERE) */
+/* CENTER SPIN */
 .centerCircle{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  width:85px;
-  height:85px;
+  width:90px;
+  height:90px;
   border-radius:50%;
   background: radial-gradient(#333,#000);
   display:flex;
@@ -108,7 +114,6 @@ body{
   justify-content:center;
   flex-direction:column;
   box-shadow:0 0 20px gold;
-  font-size:18px;
   cursor:pointer;
 }
 
@@ -119,7 +124,6 @@ body{
 
 .centerCircle small{
   font-size:12px;
-  opacity:0.7;
 }
 
 /* SIDE BUTTONS */
@@ -135,7 +139,7 @@ body{
 /* INVITE */
 .invite{
   margin-top:20px;
-  padding:12px;
+  padding:15px;
   background:linear-gradient(45deg,purple,pink);
   border-radius:20px;
 }
@@ -151,7 +155,6 @@ body{
   display:none;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
 }
 
 .popupBox{
@@ -170,26 +173,30 @@ body{
   <div>⋮</div>
 </div>
 
-<!-- TOP BUTTONS WITH EMOJI -->
+<!-- TOP BUTTONS -->
 <div class="topBtns">
+
   <div class="topItem">
-    <span class="emoji">🏆</span>
-    <button class="btn">Rank</button>
+    <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="icon">
+    <div class="topBtn">Rank</div>
   </div>
 
   <div class="topItem">
-    <span class="emoji">👬</span>
-    <button class="btn">Invitation</button>
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" class="icon">
+    <div class="topBtn">Invitation</div>
   </div>
 
   <div class="topItem">
-    <span class="emoji">🪙</span>
-    <button class="btn">Cash Out</button>
+    <img src="https://cdn-icons-png.flaticon.com/512/2331/2331943.png" class="icon">
+    <div class="topBtn cash">Cash Out</div>
   </div>
+
 </div>
 
+<!-- BALANCE -->
 <div class="balance">₹<span id="bal">0</span></div>
 
+<!-- PROGRESS -->
 <div class="progressBox">
   <div class="progress" id="progress"></div>
 </div>
@@ -197,24 +204,27 @@ body{
 
 <div class="pointer"></div>
 
+<!-- WHEEL -->
 <div class="wheelBox">
+
   <img id="wheel" class="wheel"
   src="https://res.cloudinary.com/dtz0urit6/image/upload/f_png,q_auto/cloudinary-tools-uploads/uqph2c4zajuzbgwookv3.png">
 
-  <!-- CLICK TO SPIN -->
+  <!-- CENTER SPIN -->
   <div class="centerCircle" onclick="spin()">
     <span id="spins">3</span>
     <small>Spins</small>
   </div>
 
-  <button class="btn sideBtn leftBtn" onclick="refer()">+1 Spin</button>
-  <button class="btn sideBtn rightBtn">More</button>
+  <button class="topBtn sideBtn leftBtn" onclick="refer()">+1 Spin</button>
+  <button class="topBtn sideBtn rightBtn">More</button>
+
 </div>
 
 <!-- INVITE -->
 <div class="invite">
   Invite for Spins!<br><br>
-  <button class="btn" onclick="copyLink()">Copy Link</button>
+  <button class="topBtn" onclick="copyLink()">Copy Link</button>
 </div>
 
 <!-- POPUP -->
@@ -222,7 +232,7 @@ body{
   <div class="popupBox">
     <h2>Super Win!</h2>
     <h1>₹<span id="winAmt"></span></h1>
-    <button class="btn" onclick="closePop()">GO ON</button>
+    <button class="topBtn" onclick="closePop()">GO ON</button>
   </div>
 </div>
 
@@ -268,7 +278,7 @@ function spin(){
 
   balance += win;
 
-  let deg = 1440 + Math.floor(Math.random() * 360);
+  let deg = 1440 + Math.floor(Math.random()*360);
   document.getElementById("wheel").style.transform =
     "rotate(" + deg + "deg)";
 
