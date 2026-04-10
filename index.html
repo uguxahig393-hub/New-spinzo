@@ -64,21 +64,31 @@ body{
   margin:10px auto;
 }
 
-/* WHEEL */
+/* WHEEL FIX */
+.wheelBox{
+  width:280px;
+  height:280px;
+  margin:20px auto;
+  position:relative;
+}
+
 .wheel{
-  width:260px;
-  height:260px;
+  width:100%;
+  height:100%;
   border-radius:50%;
-  display:block;
-  margin:auto;
+  background-image:url("https://s15-hzde.freeconvert.com/task/69d94b29f3e2605b4faa93a4/Screenshot_2026-04-10-23-21-00-828_org.telegram.messenger-edit.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
   transition: transform 4s ease-out;
 }
 
 /* CENTER */
 .center{
-  position:relative;
-  top:-180px;
-  margin:auto;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
   width:80px;
   height:80px;
   background:black;
@@ -90,7 +100,7 @@ body{
   cursor:pointer;
 }
 
-/* BUTTONS */
+/* BUTTON */
 .btn{
   padding:10px 20px;
   border-radius:20px;
@@ -98,7 +108,7 @@ body{
   margin:5px;
 }
 
-/* BIG INVITE */
+/* INVITE */
 .bigInvite{
   margin:20px;
   padding:15px;
@@ -139,22 +149,19 @@ body{
 
 <div class="pointer"></div>
 
-<!-- ✅ WORKING WHEEL IMAGE -->
-<img id="wheel" class="wheel"
-src="https://i.imgur.com/6o5VQwB.png">
+<!-- WHEEL -->
+<div class="wheelBox">
+  <div id="wheel" class="wheel"></div>
 
-<!-- CENTER SPIN -->
-<div class="center" onclick="spin()">
-  <span id="spins">3</span>
-  <small>Spins</small>
+  <div class="center" onclick="spin()">
+    <span id="spins">3</span>
+    <small>Spins</small>
+  </div>
 </div>
-
-<br>
 
 <button class="btn" onclick="join()">+1 Spin</button>
 <button class="btn" onclick="more()">More</button>
 
-<!-- BIG INVITE -->
 <div class="bigInvite">
   <h3>Invite for Spins!</h3>
   <button class="btn" onclick="copyLink()">Copy Link</button>
@@ -169,21 +176,23 @@ function update(){
 
   let percent=(balance/250)*100;
   if(percent>100) percent=100;
-
   document.getElementById("progress").style.width=percent+"%";
 
-  let left=250-balance;
-  if(left<0) left=0;
+  let left = 250 - balance;
 
-  document.getElementById("leftText").innerText=
-  "Only ₹"+left+" to cash out ₹250!";
+  if(left <= 0){
+    document.getElementById("leftText").innerText =
+    "🎉 You can withdraw now!";
+  }else{
+    document.getElementById("leftText").innerText =
+    "Only ₹"+Math.ceil(left)+" to cash out ₹250!";
+  }
 }
 
 function spin(){
   if(spins<=0){ alert("No spins"); return; }
 
-  spins--;
-  spinCount++;
+  spins--; spinCount++;
 
   let win;
   if(spinCount==1){
@@ -212,7 +221,6 @@ function join(){
     alert("Already claimed");
     return;
   }
-
   localStorage.setItem("join","yes");
   location.href="https://t.me/+fo5RTULOJ3c5N2Q9";
 }
