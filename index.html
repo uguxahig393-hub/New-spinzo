@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spin & Earn</title>
 
 <style>
 body{
@@ -13,49 +12,26 @@ body{
   text-align:center;
 }
 
-/* HEADER */
-.header{
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
-}
-
-/* TOP BUTTONS */
+/* TOP */
 .topBtns{
   display:flex;
   justify-content:space-around;
   margin-top:15px;
 }
-
-.topItem{
-  text-align:center;
-}
-
-.icon{
-  width:50px;
-  height:50px;
-  margin-bottom:5px;
-}
-
-/* BUTTON STYLE */
+.topItem{text-align:center;}
+.icon{width:50px;}
 .topBtn{
   padding:8px 15px;
   border-radius:20px;
   background: linear-gradient(45deg,#a100ff,#ff00cc);
-  font-weight:bold;
 }
-
-/* GOLD CASHOUT */
 .cash{
   background: linear-gradient(45deg,#FFD700,#FFA500);
   color:black;
 }
 
 /* BALANCE */
-.balance{
-  font-size:30px;
-  margin-top:10px;
-}
+.balance{font-size:30px;}
 
 /* PROGRESS */
 .progressBox{
@@ -79,14 +55,12 @@ body{
   border-right:12px solid transparent;
   border-bottom:25px solid gold;
   margin:auto;
-  margin-top:10px;
 }
 
 /* WHEEL */
 .wheelBox{
-  width:90vw;
-  max-width:320px;
-  aspect-ratio:1/1;
+  width:300px;
+  height:300px;
   margin:20px auto;
   position:relative;
 }
@@ -95,20 +69,17 @@ body{
   width:100%;
   height:100%;
   border-radius:50%;
-  object-fit:cover;
-  transition: transform 4s cubic-bezier(0.17,0.67,0.12,0.99);
+  transition: transform 4s ease-out;
 }
 
-/* CENTER SPIN */
+/* CENTER */
 .centerCircle{
   position:absolute;
-  top:50%;
-  left:50%;
+  top:50%; left:50%;
   transform:translate(-50%,-50%);
-  width:90px;
-  height:90px;
+  width:90px;height:90px;
   border-radius:50%;
-  background: radial-gradient(#333,#000);
+  background:black;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -117,24 +88,14 @@ body{
   cursor:pointer;
 }
 
-.centerCircle span{
-  font-size:22px;
-  font-weight:bold;
-}
-
-.centerCircle small{
-  font-size:12px;
-}
-
-/* SIDE BUTTONS */
+/* SIDE */
 .sideBtn{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
 }
-
-.leftBtn{ left:-10px; }
-.rightBtn{ right:-10px; }
+.leftBtn{left:-20px;}
+.rightBtn{right:-20px;}
 
 /* INVITE */
 .invite{
@@ -143,39 +104,13 @@ body{
   background:linear-gradient(45deg,purple,pink);
   border-radius:20px;
 }
-
-/* POPUP */
-.popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.8);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.popupBox{
-  background:linear-gradient(#6a11cb,#2d014d);
-  padding:20px;
-  border-radius:20px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <div>❌</div>
-  <div>Spin & Earn</div>
-  <div>⋮</div>
-</div>
-
-<!-- TOP BUTTONS -->
+<!-- TOP -->
 <div class="topBtns">
-
   <div class="topItem">
     <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" class="icon">
     <div class="topBtn">Rank</div>
@@ -190,13 +125,10 @@ body{
     <img src="https://cdn-icons-png.flaticon.com/512/2331/2331943.png" class="icon">
     <div class="topBtn cash">Cash Out</div>
   </div>
-
 </div>
 
-<!-- BALANCE -->
 <div class="balance">₹<span id="bal">0</span></div>
 
-<!-- PROGRESS -->
 <div class="progressBox">
   <div class="progress" id="progress"></div>
 </div>
@@ -206,105 +138,98 @@ body{
 
 <!-- WHEEL -->
 <div class="wheelBox">
-
   <img id="wheel" class="wheel"
   src="https://res.cloudinary.com/dtz0urit6/image/upload/f_png,q_auto/cloudinary-tools-uploads/uqph2c4zajuzbgwookv3.png">
 
-  <!-- CENTER SPIN -->
   <div class="centerCircle" onclick="spin()">
     <span id="spins">3</span>
     <small>Spins</small>
   </div>
 
-  <button class="topBtn sideBtn leftBtn" onclick="refer()">+1 Spin</button>
-  <button class="topBtn sideBtn rightBtn">More</button>
-
+  <button class="topBtn sideBtn leftBtn" onclick="joinChannel()">+1 Spin</button>
+  <button class="topBtn sideBtn rightBtn" onclick="more()">More</button>
 </div>
 
-<!-- INVITE -->
 <div class="invite">
   Invite for Spins!<br><br>
   <button class="topBtn" onclick="copyLink()">Copy Link</button>
 </div>
 
-<!-- POPUP -->
-<div class="popup" id="popup">
-  <div class="popupBox">
-    <h2>Super Win!</h2>
-    <h1>₹<span id="winAmt"></span></h1>
-    <button class="topBtn" onclick="closePop()">GO ON</button>
-  </div>
-</div>
-
 <script>
-let balance = 0;
-let spins = 3;
-let spinCount = 0;
+let balance=0, spins=3, spinCount=0;
+let rotated=0;
 
-function updateUI(){
-  document.getElementById("bal").innerText = balance;
-  document.getElementById("spins").innerText = spins;
+// UPDATE UI
+function update(){
+  document.getElementById("bal").innerText=balance;
+  document.getElementById("spins").innerText=spins;
 
-  let percent = (balance / 250) * 100;
-  if(percent > 100) percent = 100;
+  let p=(balance/250)*100;
+  if(p>100)p=100;
+  document.getElementById("progress").style.width=p+"%";
 
-  document.getElementById("progress").style.width = percent + "%";
-
-  let left = 250 - balance;
-  if(left < 0) left = 0;
-
-  document.getElementById("leftText").innerText =
-    "Only ₹" + left + " to cash out ₹250!";
+  document.getElementById("leftText").innerText=
+  "Only ₹"+(250-balance)+" to cash out ₹250!";
 }
 
+// SPIN FIXED
 function spin(){
-  if(spins <= 0){
-    alert("No spins left!");
+  if(spins<=0){ alert("No spins"); return; }
+
+  spins--; spinCount++;
+
+  let win=0;
+
+  if(spinCount==1){
+    win=Math.floor(Math.random()*31)+150; // 150-180
+  }else if(spinCount==2){
+    win=Math.floor(Math.random()*10)+1;
+  }else{
+    win=Math.floor(Math.random()*5)+1;
+  }
+
+  balance+=win;
+
+  rotated += 1440 + Math.floor(Math.random()*360);
+
+  document.getElementById("wheel").style.transform =
+  "rotate("+rotated+"deg)";
+
+  setTimeout(()=>{
+    alert("You won ₹"+win);
+    update();
+  },4000);
+}
+
+// JOIN CHANNEL (1 time reward)
+function joinChannel(){
+  if(localStorage.getItem("joined")){
+    alert("Already claimed!");
     return;
   }
 
-  spins--;
-  spinCount++;
-
-  let win = 0;
-
-  if(spinCount == 1){
-    win = 160;
-  } else if(spinCount == 2){
-    win = Math.floor(Math.random()*10)+1;
-  } else {
-    win = Math.floor(Math.random()*5)+1;
-  }
-
-  balance += win;
-
-  let deg = 1440 + Math.floor(Math.random()*360);
-  document.getElementById("wheel").style.transform =
-    "rotate(" + deg + "deg)";
+  window.open("https://t.me/+fo5RTULOJ3c5N2Q9");
 
   setTimeout(()=>{
-    document.getElementById("popup").style.display = "flex";
-    document.getElementById("winAmt").innerText = win;
-    updateUI();
-  }, 4000);
+    spins++;
+    localStorage.setItem("joined",true);
+    alert("Joined! +1 Spin");
+    update();
+  },2000);
 }
 
-function closePop(){
-  document.getElementById("popup").style.display = "none";
+// MORE
+function more(){
+  alert("Coming soon...");
 }
 
-function refer(){
-  spins++;
-  alert("+1 Spin Added");
-  updateUI();
-}
-
+// COPY
 function copyLink(){
-  navigator.clipboard.writeText(window.location.href);
-  alert("Link Copied!");
+  navigator.clipboard.writeText(location.href);
+  alert("Copied!");
 }
 
-updateUI();
+update();
 </script>
 
 </body>
