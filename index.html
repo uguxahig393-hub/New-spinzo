@@ -77,10 +77,11 @@ body{
   height:100%;
   border-radius:50%;
   background-image:url("wheel.jpg");
-  background-size:cover;
+  background-size:contain;   /* 🔥 main fix */
   background-position:center;
   background-repeat:no-repeat;
   transition: transform 4s ease-out;
+  background-color:black;    /* optional gap fill */
 }
 
 /* CENTER */
